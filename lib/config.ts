@@ -11,11 +11,27 @@ export const STARTER_PROMPTS: StartScreenPrompt[] = [
     prompt: "What can you do?",
     icon: "circle-question",
   },
+  {
+    label: "Show me a success story with an image!",
+    prompt: "Show me a success story with an image!",
+    icon: "circle-question",
+  },
+  {
+    label: "Show me a video of adding stamps to a pass",
+    prompt: "Show me a video of adding stamps to a pass",
+    icon: "circle-question",
+  },
+  {
+    label: "Let me contact sales through a form",
+    prompt: "Let me contact sales through a form",
+    icon: "circle-question",
+  },
 ];
 
 export const PLACEHOLDER_INPUT = "Ask anything...";
 
-export const GREETING = "How can I help you today?";
+export const GREETING = `👋
+    Hi I’m Andy, the AnyID chat assistant. How can I help you today?`;
 
 export const getThemeConfig = (theme: ColorScheme): ThemeOption => ({
   color: {
