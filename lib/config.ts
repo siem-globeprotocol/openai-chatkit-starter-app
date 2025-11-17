@@ -12,13 +12,13 @@ export const STARTER_PROMPTS: StartScreenPrompt[] = [
     icon: "circle-question",
   },
   {
-    label: "Show me a success story with an image!",
-    prompt: "Show me a success story with an image!",
+    label: "Show me a success story of an existing customer!",
+    prompt: "Show me a success story of an existing customer!",
     icon: "circle-question",
   },
   {
-    label: "Show me a video of adding stamps to a pass",
-    prompt: "Show me a video of adding stamps to a pass",
+    label: "Show me how to add stamps to a pass",
+    prompt: "Show me how to add stamps to a pass",
     icon: "circle-question",
   },
   {

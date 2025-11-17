@@ -224,6 +224,32 @@ export function ChatKitPanel({ theme, onResponseEnd }: ChatKitPanelProps) {
     onResponseEnd();
   }, [onResponseEnd]);
 
+  function toEmbedUrl(url: string): string {
+    try {
+      const shortsMatch = url.match(/youtube\.com\/shorts\/([^?]+)/);
+      if (shortsMatch) {
+        return `https://www.youtube.com/embed/${shortsMatch[1]}`;
+      }
+
+      const watchMatch = url.match(/[?&]v=([^&]+)/);
+      if (watchMatch) {
+        return `https://www.youtube.com/embed/${watchMatch[1]}`;
+      }
+
+      return url;
+    } catch {
+      return url;
+    }
+  }
+
+  const [videoModal, setVideoModal] = useState<{
+    open: boolean;
+    url: string | null;
+  }>({
+    open: false,
+    url: null,
+  });
+
   const chatkit = useChatKit({
     api: { getClientSecret },
     theme: { colorScheme: theme, ...getThemeConfig(theme) },
@@ -239,6 +265,17 @@ export function ChatKitPanel({ theme, onResponseEnd }: ChatKitPanelProps) {
     widgets: {
       async onAction(action, widgetItem) {
         console.log("[Widget Action]", { action, widgetItem });
+
+        if (action.type === "video.open") {
+          const url =
+            (action.payload as { url?: string } | undefined)?.url ?? "";
+
+          if (url) {
+            setVideoModal({ open: true, url });
+          }
+
+          return;
+        }
 
         if (action.type === "contact.submit") {
           const values =
@@ -260,10 +297,6 @@ export function ChatKitPanel({ theme, onResponseEnd }: ChatKitPanelProps) {
           };
 
           const sessionId = getSessionId();
-          console.log("[ContactForm] Submitting contact form", {
-            sessionId,
-            contact,
-          });
 
           await fetch(
             "https://anyid.app.n8n.cloud/webhook-test/agent-contact-submission",
@@ -291,7 +324,6 @@ export function ChatKitPanel({ theme, onResponseEnd }: ChatKitPanelProps) {
       name: string;
       params: Record<string, unknown>;
     }) => {
-      console.log("[ClientTool invoked]", toolCall);
       return {};
     },
 
@@ -388,6 +420,32 @@ export function ChatKitPanel({ theme, onResponseEnd }: ChatKitPanelProps) {
           />
         )}
       </div>
+
+      {/* Video modal overlay */}
+      {videoModal.open && videoModal.url && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-3xl mx-4 rounded-2xl bg-black shadow-2xl overflow-hidden">
+            <button
+              type="button"
+              className="absolute right-3 top-3 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white/80 hover:text-white hover:bg-black transition"
+              onClick={() => setVideoModal({ open: false, url: null })}
+              aria-label="Sluit video"
+            >
+              ✕
+            </button>
+
+            <div className="relative w-full pt-[56.25%]">
+              <iframe
+                src={`${toEmbedUrl(videoModal.url)}?rel=0`}
+                title="YouTube video"
+                className="absolute inset-0 h-full w-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
