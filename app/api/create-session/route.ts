@@ -110,7 +110,7 @@ export async function POST(request: Request): Promise<Response> {
         sessionCookie
       );
     }
-
+ 
     const clientSecret = upstreamJson?.client_secret ?? null;
     const expiresAfter = upstreamJson?.expires_after ?? null;
     const responsePayload = {
